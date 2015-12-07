@@ -15,6 +15,7 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
@@ -30,8 +31,15 @@ module.exports = {
       loaders: ['react-hot', 'babel'],
       include: path.join(__dirname, 'src')
     }, {
+      test: /\.jsx$/,
+      loaders: ['react-hot', 'babel'],
+      include: path.join(__dirname, 'src')
+    }, {
       test: /\.css$/,
       loader: 'style-loader!css!'
+    }, {
+      test: /\.styl$/,
+      loader: 'style-loader!css-loader!stylus-loader'
     }, {
       test: /\.less$/,
       loader: 'style!css!less'

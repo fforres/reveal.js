@@ -1,66 +1,58 @@
 import React, { Component } from 'react';
-module.exports = React.createClass({
-  componentDidMount: ()=>{
-    Reveal.initialize({
-      controls: true,
-      progress: true,
-      history: true,
-      center: true,
-
-      transition: 'slide', // none/fade/slide/convex/concave/zoom
-
-      // Optional reveal.js plugins
-      dependencies: [
-        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-        { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-        { src: 'plugin/zoom-js/zoom.js', async: true },
-        { src: 'plugin/notes/notes.js', async: true }
-      ]
-    });
-  },
-  componentDidUpdate: ()=>{
-    console.log("1231324");
+import UserInteraction from './UserInteraction'
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import { recalculateDom } from '../reducers/actions.js';
+class App extends Component{
+  componentDidMount(){
+    this.getCurrentDomState(recalculateDom)
+  }
+  componentDidUpdate(cb){
     debugger;
-    Reveal.initialize({
-      controls: true,
-      progress: true,
-      history: true,
-      center: true,
-
-      transition: 'slide', // none/fade/slide/convex/concave/zoom
-
-      // Optional reveal.js plugins
-      dependencies: [
-        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-        { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-        { src: 'plugin/zoom-js/zoom.js', async: true },
-        { src: 'plugin/notes/notes.js', async: true }
-      ]
-    });
-  },
-  render: ()=>{
+    this.getCurrentDomState(recalculateDom)
+  }
+  getCurrentDomState(cb){
+    var htmlStructure = {};
+    var getSectionNodesStructure = (node)=>{
+      var nodes = [];
+      for (var i = 0; i < node.childNodes.length; i++) {
+        var el = node.childNodes[i];
+        if(el.tagName.toLowerCase() === "section"){
+          nodes.push({
+            dom:el,
+            nodes:getSectionNodesStructure(el)
+          });
+        }
+      }
+      return nodes;
+    };
+    htmlStructure.dom = document.querySelectorAll(".slides")[0];
+    htmlStructure.nodes = document.querySelectorAll(".slides")[0];
+    htmlStructure.nodes = getSectionNodesStructure(htmlStructure.nodes);
+    if(cb){
+      this.props.dispatch(cb(htmlStructure));
+    }
+  }
+  render(){
     return(
         <div className="slides">
-          <section>
-            <h1>Reveal.js</h1>
+          <UserInteraction/>
+          <section className="past ">
+            <h1> Reveal.js :D </h1>
             <h3>The HTML Presentation Framework</h3>
             <p>
               <small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
             </p>
           </section>
 
-          <section>
+          <section className="present" data-direction="column">
             <h2>Hello There.</h2>
             <p>
               reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
             </p>
           </section>
 
-          <section>
+          <section className="future">
             <section>
               <h2>Vertical Slides</h2>
               <p>Slides can be nested inside of each other.</p>
@@ -74,7 +66,7 @@ module.exports = React.createClass({
               <h2>Basement Level 1</h2>
               <p>Nested slides are useful for adding additional detail underneath a high level horizontal slide.</p>
             </section>
-            <section>
+            <section >
               <h2>Basement Level 2</h2>
               <p>That's it, time to go back up.</p>
               <br/>
@@ -116,12 +108,12 @@ module.exports = React.createClass({
               Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
 
               ```
-              <section data-markdown>
+              section data-markdown
                 ## Markdown support
 
                 Write content using inline or external Markdown.
                 Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-              </section>
+              section
               ```
             </script>
           </section>
@@ -352,8 +344,16 @@ module.exports = React.createClass({
               - <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
             </p>
           </section>
-
         </div>
     )
   }
-})
+}
+
+
+function select(state){
+  return{
+    recalculateDom : state.recalculateDom
+  }
+}
+
+export default connect(select)(App);
