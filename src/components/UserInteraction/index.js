@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { nextSlide, previousSlide, gotoSlide, debug } from '../../reducers/actions.js';
+import { nextSlide, previousSlide,setCurrentSlide } from '../../reducers/actions.js';
 import './style.css';
 
 class UserInteraction extends Component{
@@ -9,7 +9,8 @@ class UserInteraction extends Component{
       var keyCode = e.keyCode;
       switch (keyCode) {
         case 39:
-          this.props.dispatch(nextSlide());
+          var a = this.props.dispatch(nextSlide());
+          this.props.dispatch(setCurrentSlide())
           break;
         case 37:
           this.props.dispatch(previousSlide());
@@ -20,8 +21,7 @@ class UserInteraction extends Component{
     }, false);
   }
   componentDidUpdate(){
-    debugger;
-    console.log("UPDATED")
+    this.props.dispatch(setCurrentSlide());
   }
   render(){
     const {dispatch} = this.props;
@@ -39,7 +39,6 @@ function select(state){
     nextSlide : state.nextSlide,
     previousSlide : state.previousSlide,
     gotoSlide : state.gotoSlide,
-    debug : state.debug
   }
 }
 export default connect(select)(UserInteraction);

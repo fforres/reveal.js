@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import UserInteraction from './UserInteraction'
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { recalculateDom } from '../reducers/actions.js';
+import { recalculateDom,addSlide } from '../reducers/actions.js';
 class App extends Component{
   componentDidMount(){
-    this.getCurrentDomState(recalculateDom)
+    this.getCurrentDomState(recalculateDom);
   }
   componentDidUpdate(cb){
-    debugger;
-    this.getCurrentDomState(recalculateDom)
+    this.getCurrentDomState(recalculateDom);
   }
   getCurrentDomState(cb){
     var htmlStructure = {};
@@ -18,6 +17,8 @@ class App extends Component{
       for (var i = 0; i < node.childNodes.length; i++) {
         var el = node.childNodes[i];
         if(el.tagName.toLowerCase() === "section"){
+          //debugger;
+          this.props.dispatch(addSlide(el));
           nodes.push({
             dom:el,
             nodes:getSectionNodesStructure(el)
@@ -45,7 +46,7 @@ class App extends Component{
             </p>
           </section>
 
-          <section className="present" data-direction="column">
+          <section className="present current cool" data-direction="column">
             <h2>Hello There.</h2>
             <p>
               reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
@@ -352,7 +353,8 @@ class App extends Component{
 
 function select(state){
   return{
-    recalculateDom : state.recalculateDom
+    recalculateDom : state.recalculateDom,
+    addSlide : state.addSlide
   }
 }
 

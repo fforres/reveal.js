@@ -3,9 +3,9 @@
  */
 export const NEXT_SLIDE = 'NEXT_SLIDE';
 export const PREVIOUS_SLIDE = 'PREVIOUS_SLIDE';
-export const SPECIFIC_SLIDE = 'SPECIFIC_SLIDE';
-export const DEBUG = 'DEBUG';
 export const RECALCULATE_DOM = 'RECALCULATE_DOM';
+export const ADD_SLIDE = 'ADD_SLIDE';
+export const SET_CURRENT_SLIDE = 'SET_CURRENT_SLIDE';
 
 /*
  * other constants
@@ -29,14 +29,14 @@ export function previousSlide() {
   return { type: PREVIOUS_SLIDE };
 }
 
-export function gotoSlide(index) {
-  return { type: SPECIFIC_SLIDE, index };
-}
-
-export function debug(){
-    return { type: DEBUG };
-}
 
 export function recalculateDom(domNodes){
   return { type: RECALCULATE_DOM, domNodes}
+}
+
+export function addSlide(domNode){
+  return { type: ADD_SLIDE, domNode}
+}
+export function setCurrentSlide(index){
+  return { type: SET_CURRENT_SLIDE, index}
 }
