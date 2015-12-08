@@ -13,16 +13,15 @@ class App extends Component{
   }
   getCurrentDomState(cb){
     var htmlStructure = {};
-    var getSectionNodesStructure = (node)=>{
+    var getSectionNodesStructure = (node,parent)=>{
       var nodes = [];
       for (var i = 0; i < node.childNodes.length; i++) {
         var el = node.childNodes[i];
         if(el.tagName.toLowerCase() === "section"){
-          //debugger;
-          this.props.dispatch(addSlide(el));
+          this.props.dispatch(addSlide(el,parent));
           nodes.push({
             dom:el,
-            nodes:getSectionNodesStructure(el)
+            nodes:getSectionNodesStructure(el,i-1)
           });
         }
       }

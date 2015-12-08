@@ -34,8 +34,8 @@ export function recalculateDom(domNodes){
   return { type: RECALCULATE_DOM, domNodes}
 }
 
-export function addSlide(domNode){
-  return { type: ADD_SLIDE, domNode}
+export function addSlide(domNode, parentIndex){
+  return { type: ADD_SLIDE, domNode, parentIndex}
 }
 export function setCurrentSlide(index){
   return { type: SET_CURRENT_SLIDE, index}

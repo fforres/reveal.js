@@ -7,7 +7,17 @@ export default (state = {}, action) => {
       if(typeof state.slides === 'undefined'){
         state.slides = [];
       }
-      state.slides = [...state.slides,action.domNode];
+      var newElement = {dom:action.domNode};
+      //Setting parent relations on the child
+      if(action.parentIndex){
+        newElement.parent = { index: action.parentIndex, dom: state.slides[action.parentIndex].dom };
+        //Setting Child relations on th parent
+        if(typeof state.slides[action.parentIndex].child === 'undefined'){
+          state.slides[action.parentIndex].child = [];
+        }
+        state.slides[action.parentIndex].child.push(state.slides.length+1);
+      }
+      state.slides = [...state.slides,newElement];
       return state;
     case 'NEXT_SLIDE':
         if(typeof state.current === "undefined"){
@@ -17,7 +27,9 @@ export default (state = {}, action) => {
           return state;
         }
         state.current++;
-        console.log(state);
+        if(state.slides[state.current] && state.slides[state.current].child && state.slides[state.current].child.length > 0){
+          state.current++;
+        }
         return state;
     case 'PREVIOUS_SLIDE':
         if(typeof state.current === "undefined" || state.current-1 < 0){
@@ -25,6 +37,9 @@ export default (state = {}, action) => {
           return state;
         }
         state.current--;
+        if(state.slides[state.current] && state.slides[state.current].child && state.slides[state.current].child.length > 0){
+          state.current--;
+        }
         return state;
     case "SET_CURRENT_SLIDE":
         if(typeof state.current === "undefined"){
@@ -34,7 +49,7 @@ export default (state = {}, action) => {
         var theSlides = state.slides;
         state.slides.forEach(function(el,i,as){
           //De todas las slides, removeer "present,past, and future"
-          var newClasses = [...el.classList].filter(function(el,i,as){
+          var newClasses = [...el.dom.classList].filter(function(el,i,as){
             if(el !== "present" && el !== "past" && el !== "future"){
               return el;
             }
@@ -51,7 +66,7 @@ export default (state = {}, action) => {
           if(i === theCurrentSlide+1 && typeof theSlides[theCurrentSlide+1] !== 'undefined'){
             newClasses.push("future");
           }
-          el.className =  newClasses.join(" ");
+          el.dom.className =  newClasses.join(" ");
         });
         return state;
     case "SET_PREVIOUS_SLIDE":
