@@ -14,6 +14,7 @@ class UserInteraction extends Component{
           break;
         case 37:
           this.props.dispatch(previousSlide());
+          this.props.dispatch(setCurrentSlide())
           break;
         default:
           break;

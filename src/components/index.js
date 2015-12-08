@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import UserInteraction from './UserInteraction'
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { recalculateDom,addSlide } from '../reducers/actions.js';
+import { recalculateDom, addSlide, setCurrentSlide } from '../reducers/actions.js';
 class App extends Component{
   componentDidMount(){
     this.getCurrentDomState(recalculateDom);
+    this.props.dispatch(setCurrentSlide());
   }
   componentDidUpdate(cb){
     this.getCurrentDomState(recalculateDom);
@@ -38,7 +39,7 @@ class App extends Component{
     return(
         <div className="slides">
           <UserInteraction/>
-          <section className="past ">
+          <section className="" data-transition="slide">
             <h1> Reveal.js :D </h1>
             <h3>The HTML Presentation Framework</h3>
             <p>
@@ -46,14 +47,14 @@ class App extends Component{
             </p>
           </section>
 
-          <section className="present current cool" data-direction="column">
-            <h2>Hello There.</h2>
+          <section className="" data-transition="slide" data-direction="column">
+            <h2>Hello There :D</h2>
             <p>
               reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
             </p>
           </section>
 
-          <section className="future">
+          <section className="" data-transition="slide">
             <section>
               <h2>Vertical Slides</h2>
               <p>Slides can be nested inside of each other.</p>
@@ -354,7 +355,8 @@ class App extends Component{
 function select(state){
   return{
     recalculateDom : state.recalculateDom,
-    addSlide : state.addSlide
+    addSlide : state.addSlide,
+    setCurrentSlide: state.setCurrentSlide
   }
 }
 
